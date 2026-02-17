@@ -1,14 +1,14 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-
-COPY ["CONTECTIONSTRINGPOSTGRE.csproj", "./"]
-RUN dotnet restore "./CONTECTIONSTRINGPOSTGRE.csproj"
+WORKDIR /app
 
 COPY . .
-RUN dotnet publish "CONTECTIONSTRINGPOSTGRE.csproj" -c Release -o /app/publish
+
+RUN dotnet restore
+RUN dotnet publish -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=build /app/publish .
+
+COPY --from=build /app/out .
 
 ENTRYPOINT ["dotnet", "CONTECTIONSTRINGPOSTGRE.dll"]
